@@ -6,6 +6,7 @@ import { startSession, updateSession } from './modules/session.mjs';
 import treeRouter from './routes/treeAPI.mjs';
 import questLogRouter from './routes/questLogAPI.mjs';
 import userRouter from './routes/userAPI.mjs';
+import deckRouter from "./routes/deckAPI.mjs";
 
 const ENABLE_LOGGING = false;
 
@@ -21,6 +22,7 @@ server.use(express.static('public'));
 server.use("/tree/", treeRouter);
 server.use("/quest", questLogRouter);
 server.use("/user", userRouter);
+server.use(deckRouter);
 
 server.get('/tmp/poem', (req, res) => {
     res.send(`
