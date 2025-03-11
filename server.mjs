@@ -20,15 +20,48 @@ server.use(startSession);
 server.use(express.static('public'));
 server.use("/tree/", treeRouter);
 server.use("/quest", questLogRouter);
-server.use("/user", userRouter)
+server.use("/user", userRouter);
 
+server.get('/tmp/poem', (req, res) => {
+    res.send(`
+        Roses are red,<br>
+        Violets are blue,<br>
+        I still don't know,<br>
+        What the dog do.
+    `);
+});
 
+const quotes = [
+    "Where did my boats go?. - Franklin D. Roosevelt",
+    "Do or do not, there is no try. - Sun Tzu",
+    "I get to keep my bloody horse if I want to. - Winston Churchill",
+    "If only I could separate atoms as well as I separate marriages. - Robert Oppenheimer",
+    "Demand to see life's manager, get mad! - Cave Johnson"
+];
+
+server.get('/tmp/quote', (req, res) => {
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    res.send(randomQuote);
+});
+
+server.use(express.json());
+
+server.get('/tmp/sum/:a/:b', (req, res) => {
+    const a = parseFloat(req.params.a);
+    const b = parseFloat(req.params.b);
+
+    if (isNaN(a) || isNaN(b)) {
+        return res.status(400).send("Begge parametere må være tall!");
+    }
+
+    const sum = a + b;
+    res.send(`Summen av ${a} og ${b} er ${sum}`);
+});
 
 server.use(updateSession);
 
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));
 });
-
 
 export default server;
