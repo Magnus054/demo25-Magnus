@@ -3,19 +3,16 @@ import { chessData } from "../data/chess.mjs";
 
 const chessRouter = express.Router();
 
-// 🔹 GET: Hent alle spillere
 chessRouter.get("/players", (req, res) => {
     res.json(chessData.players);
 });
 
-// 🔹 GET: Hent en spesifikk spiller
 chessRouter.get("/players/:id", (req, res) => {
     const player = chessData.players[req.params.id];
     if (!player) return res.status(404).json({ error: "Spiller ikke funnet" });
     res.json(player);
 });
 
-// 🔹 POST: Legg til en ny spiller
 chessRouter.post("/players", (req, res) => {
     const { id, rating } = req.body;
     if (!id || !rating) return res.status(400).json({ error: "Mangler id eller rating" });
@@ -24,12 +21,10 @@ chessRouter.post("/players", (req, res) => {
     res.status(201).json({ message: `Spiller ${id} lagt til` });
 });
 
-// 🔹 GET: Hent alle sjakkpartier
 chessRouter.get("/games", (req, res) => {
     res.json(chessData.games);
 });
 
-// 🔹 POST: Opprett et nytt sjakkparti
 chessRouter.post("/games", (req, res) => {
     const { id, players } = req.body;
     if (!id || !players || players.length !== 2) {
@@ -40,7 +35,6 @@ chessRouter.post("/games", (req, res) => {
     res.status(201).json({ message: `Spill ${id} opprettet` });
 });
 
-// 🔹 PATCH: Legg til et trekk i et spill
 chessRouter.patch("/games/:id/move", (req, res) => {
     const { move } = req.body;
     const game = chessData.games[req.params.id];
@@ -52,7 +46,6 @@ chessRouter.patch("/games/:id/move", (req, res) => {
     res.json({ message: `Trekk ${move} lagt til i spill ${req.params.id}` });
 });
 
-// 🔹 DELETE: Slett et spill
 chessRouter.delete("/games/:id", (req, res) => {
     if (!chessData.games[req.params.id]) {
         return res.status(404).json({ error: "Spill ikke funnet" });
