@@ -7,6 +7,7 @@ const contentToCache = [
     "/css/style.css"
 ];
 
+
 self.addEventListener("install", (e) => {
     console.log("[Service Worker] Install");
     e.waitUntil(
@@ -17,6 +18,7 @@ self.addEventListener("install", (e) => {
         })()
     );
 });
+
 
 self.addEventListener("fetch", (e) => {
     if (!(e.request.url.startsWith("http:") || e.request.url.startsWith("https:"))) {
