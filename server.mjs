@@ -18,6 +18,7 @@ const logger = log(LOGG_LEVELS.VERBOSE);
 server.set('port', port);
 server.use(logger);
 server.use(startSession);
+server.use(updateSession);
 server.use(express.static('public'));
 server.use("/tree/", treeRouter);
 server.use("/quest", questLogRouter);
@@ -60,10 +61,12 @@ server.get('/tmp/sum/:a/:b', (req, res) => {
     res.send(`Summen av ${a} og ${b} er ${sum}`);
 });
 
-server.use(updateSession);
-
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));
+});
+
+server.get("/debug/session", (req, res) => {
+    res.json({ session: req.session });
 });
 
 export default server;
