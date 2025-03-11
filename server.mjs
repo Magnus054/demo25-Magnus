@@ -1,3 +1,4 @@
+import chessRouter from "./routes/chessAPI.mjs";
 import express from 'express'
 import HTTP_CODES from './utils/httpCodes.mjs';
 import log from './modules/log.mjs';
@@ -11,7 +12,7 @@ import deckRouter from "./routes/deckAPI.mjs";
 const ENABLE_LOGGING = false;
 
 const server = express();
-const port = (process.env.PORT || 8000);
+const port = (process.env.PORT || 10000);
 
 const logger = log(LOGG_LEVELS.VERBOSE);
 
@@ -68,5 +69,8 @@ server.listen(server.get('port'), function () {
 server.get("/debug/session", (req, res) => {
     res.json({ session: req.session });
 });
+
+server.use(express.json());
+server.use("/chess", chessRouter);
 
 export default server;
