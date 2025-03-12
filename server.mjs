@@ -1,5 +1,5 @@
 import chessRouter from "./routes/chessAPI.mjs";
-import express from 'express'
+import express from 'express';
 import HTTP_CODES from './utils/httpCodes.mjs';
 import log from './modules/log.mjs';
 import { LOGG_LEVELS, eventLogger } from './modules/log.mjs';
@@ -9,14 +9,16 @@ import questLogRouter from './routes/questLogAPI.mjs';
 import userRouter from './routes/userAPI.mjs';
 import deckRouter from "./routes/deckAPI.mjs";
 
-const ENABLE_LOGGING = false;
+console.log("deckAPI.mjs imported successfully");
 
+const ENABLE_LOGGING = false;
 const server = express();
 const port = (process.env.PORT || 10000);
 
 const logger = log(LOGG_LEVELS.VERBOSE);
 
 server.set('port', port);
+server.use(express.json());
 server.use(logger);
 server.use(startSession);
 server.use(updateSession);
@@ -24,7 +26,9 @@ server.use(express.static('public'));
 server.use("/tree/", treeRouter);
 server.use("/quest", questLogRouter);
 server.use("/user", userRouter);
-server.use(deckRouter);
+server.use("/", deckRouter);
+
+console.log("deckRouter mounted at /temp");
 
 server.get('/tmp/poem', (req, res) => {
     res.send(`
@@ -36,10 +40,10 @@ server.get('/tmp/poem', (req, res) => {
 });
 
 const quotes = [
-    "Where did my boats go?. - Franklin D. Roosevelt",
+    "Where did my boats go? - Franklin D. Roosevelt",
     "Do or do not, there is no try. - Sun Tzu",
     "I get to keep my bloody horse if I want to. - Winston Churchill",
-    "If only I could separate atoms as well as I separate marriages. - Robert Oppenheimer",
+    "If only I could split atoms as well as I split marriages. - Robert Oppenheimer",
     "Demand to see life's manager, get mad! - Cave Johnson"
 ];
 
@@ -70,7 +74,6 @@ server.get("/debug/session", (req, res) => {
     res.json({ session: req.session });
 });
 
-server.use(express.json());
 server.use("/chess", chessRouter);
 
 export default server;

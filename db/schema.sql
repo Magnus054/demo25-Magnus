@@ -10,3 +10,9 @@ CREATE TABLE IF NOT EXISTS games (
     player2 TEXT NOT NULL REFERENCES players(name),
     moves TEXT[] DEFAULT '{}'
 );
+
+CREATE TABLE IF NOT EXISTS decks (
+    id SERIAL PRIMARY KEY,
+    deck_id VARCHAR(255) UNIQUE NOT NULL,
+    cards JSONB NOT NULL
+);

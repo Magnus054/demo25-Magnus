@@ -1,7 +1,7 @@
 let deck_id = "";
 
 async function createDeck() {
-    const response = await fetch("/temp/deck", { method: "POST" });
+    const response = await fetch("https://demo25-magnus.onrender.com/temp/deck", { method: "POST" });
     const data = await response.json();
     deck_id = data.deck_id;
     document.getElementById("output").innerText = "Ny kortstokk opprettet: " + deck_id;
@@ -18,7 +18,7 @@ async function shuffleDeck() {
 
 async function drawCard() {
     if (!deck_id) {
-        alert("⚠️ Du må opprette en kortstokk først!");
+        alert("Du må opprette en kortstokk først!");
         return;
     }
     
@@ -26,10 +26,10 @@ async function drawCard() {
     const data = await response.json();
 
     if (data.error) {
-        document.getElementById("output").innerText = `❌ Feil: ${data.error}`;
+        document.getElementById("output").innerText = `Feil: ${data.error}`;
         return;
     }
 
-    document.getElementById("output").innerText = `🎴 Du trakk: ${data.card.rank} of ${data.card.suit}`;
+    document.getElementById("output").innerText = `Du trakk: ${data.card.rank} of ${data.card.suit}`;
 }
 
