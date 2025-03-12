@@ -26,9 +26,9 @@ server.use(express.static('public'));
 server.use("/tree/", treeRouter);
 server.use("/quest", questLogRouter);
 server.use("/user", userRouter);
-server.use("/", deckRouter);
+server.use("/deck", deckRouter);
 
-console.log("deckRouter mounted at /temp");
+console.log("✅ deckRouter er registrert under /deck");
 
 server.get('/tmp/poem', (req, res) => {
     res.send(`

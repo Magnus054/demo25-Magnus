@@ -3,25 +3,25 @@ import pool from "../modules/db.mjs";
 
 const deckRouter = express.Router();
 
-deckRouter.post("/deck", async (req, res) => {
-    console.log("Received POST /deck request");
+deckRouter.post("/", async (req, res) => {
+    console.log("✅ Received POST /deck request");
 
     try {
         const result = await pool.query(
-            "INSERT INTO decks (cards) VALUES ($1) RETURNING deck_id",
+            "INSERT INTO decks (deck_id, cards) VALUES (gen_random_uuid(), $1) RETURNING deck_id",
             [JSON.stringify([])]
         );
 
-        console.log("Kortstokk opprettet med ID:", result.rows[0].deck_id);
+        console.log("✅ Kortstokk opprettet med ID:", result.rows[0].deck_id);
         res.json({ deck_id: result.rows[0].deck_id });
 
     } catch (error) {
-        console.error("Database error:", error);
+        console.error("❌ Database error:", error);
         res.status(500).json({ error: "Databasefeil" });
     }
 });
 
-deckRouter.get("/deck/:deck_id", async (req, res) => {
+deckRouter.get("/:deck_id", async (req, res) => {
     try {
         const { deck_id } = req.params;
         const result = await pool.query("SELECT * FROM decks WHERE deck_id = $1", [deck_id]);
@@ -32,12 +32,12 @@ deckRouter.get("/deck/:deck_id", async (req, res) => {
 
         res.json(result.rows[0]);
     } catch (error) {
-        console.error("Database error:", error);
+        console.error("❌ Database error:", error);
         res.status(500).json({ error: "Databasefeil" });
     }
 });
 
-deckRouter.patch("/deck/shuffle/:deck_id", async (req, res) => {
+deckRouter.patch("/shuffle/:deck_id", async (req, res) => {
     try {
         const { deck_id } = req.params;
         const result = await pool.query("SELECT * FROM decks WHERE deck_id = $1", [deck_id]);
@@ -46,7 +46,7 @@ deckRouter.patch("/deck/shuffle/:deck_id", async (req, res) => {
             return res.status(404).json({ error: "Kortstokk ikke funnet" });
         }
 
-        let deck = result.rows[0].cards ? JSON.parse(result.rows[0].cards) : [];
+        let deck = result.rows[0].cards || [];
 
         if (deck.length === 0) {
             deck = generateDeck();
@@ -58,31 +58,32 @@ deckRouter.patch("/deck/shuffle/:deck_id", async (req, res) => {
 
         res.json({ message: `Kortstokken ${deck_id} er stokket` });
     } catch (error) {
-        console.error("Database error:", error);
+        console.error("❌ Database error:", error);
         res.status(500).json({ error: "Databasefeil" });
     }
 });
 
-deckRouter.get("/deck/:deck_id/card", async (req, res) => {
+deckRouter.get("/:deck_id/card", async (req, res) => {
     try {
         const { deck_id } = req.params;
-        const result = await pool.query("SELECT * FROM decks WHERE id = $1", [deck_id]);
+        const result = await pool.query("SELECT * FROM decks WHERE deck_id = $1", [deck_id]);
 
         if (result.rows.length === 0) {
             return res.status(404).json({ error: "Kortstokk ikke funnet" });
         }
 
-        let deck = JSON.parse(result.rows[0].cards);
+        let deck = result.rows[0].cards || [];
+
         if (deck.length === 0) {
             return res.status(400).json({ error: "Ingen flere kort i kortstokken" });
         }
 
-        const card = deck.pop();
-        await pool.query("UPDATE decks SET cards = $1 WHERE id = $2", [JSON.stringify(deck), deck_id]);
+        const card = deck.pop(); 
+        await pool.query("UPDATE decks SET cards = $1 WHERE deck_id = $2", [JSON.stringify(deck), deck_id]);
 
         res.json({ card });
     } catch (error) {
-        console.error(error);
+        console.error("❌ Database error:", error);
         res.status(500).json({ error: "Databasefeil" });
     }
 });
