@@ -2,7 +2,7 @@ import express from "express";
 import { Tree, Node } from "../data/tree.mjs";
 
 const treeRouter = express.Router();
-const tree = new Tree(""); // Riktig måte å opprette et nytt tre på
+const tree = new Tree("");
 
 treeRouter.use(express.json());
 

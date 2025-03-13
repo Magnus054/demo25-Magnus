@@ -35,7 +35,6 @@ async function runQuery(query, ...values) {
 
     } catch (error) {
 
-        // Feilhåndtering 
         console.error(error);
         return null;
 
